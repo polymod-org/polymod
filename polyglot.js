@@ -68,13 +68,19 @@ if you ask for help / support with this (not working, how to use, anything), exp
     const matchesItemTitle = (el) => (el && [...sidebar.children].some((x) => el.textContent.trim().toLowerCase() === x.textContent.trim().toLowerCase()));
   
     const getContentFromChild = (el) => {
-      return [...el.querySelectorAll('*')].find((x) => x.getBoundingClientRect().width > window.innerWidth * 0.5 && matchesItemTitle(x.children[0])) || getContentFromChild(el.parentElement);
+      return [...el.querySelectorAll('*')].find((x) =>
+        x.getBoundingClientRect().width > window.innerWidth * 0.5 && // Width >50% of window
+        matchesItemTitle(x.children[0])
+      ) || getContentFromChild(el.parentElement);
     };
   
     content = getContentFromChild(sidebar);
   };
   
   grab();
+
+  sidebar.style.background = 'red';
+  content.style.background = 'blue';
   
   const sidebarItemClasses = {
     selected: [...sidebar.children].find((x) => x.textContent.trim().toLowerCase() === content.children[0].textContent.trim().toLowerCase()).className,
@@ -83,9 +89,6 @@ if you ask for help / support with this (not working, how to use, anything), exp
   
   /* const sidebar = grabGenericImportantEl(0.1, 0.5, 5, 5, 'settings');
   const content = grabGenericImportantEl(0.5, 0.9, 4, 8, 'settings'); */
-  
-  /* sidebar.style.background = 'red';
-  content.style.background = 'blue'; */
   
   console.log(sidebar, content);
   
