@@ -40,38 +40,70 @@ if you ask for help / support with this (not working, how to use, anything), exp
       rect.width < window.innerWidth * 0.5 && // Width <50% of window
       rect.x === 0 && rect.y === 0; // At far left (x = 0)
   }).pop()); */
+
+  /* const getUniqueChildrenClasses = (container) => {
+    const mapped = [...container.children].slice(0, 5).reduce((acc, x) => acc.concat(...x.classList), []);
+    const unique = [...new Set(mapped)];
+
+    return unique;
+  }; */
+
+  const getUniqueChildrenProps = (container) => {
+    const mapped = [...container.children].slice(0, 5).map((x) => x.tagName + x.className);
+    const unique = [...new Set(mapped)];
+
+    return unique;
+  };
   
   let sidebar, content;
   const grab = () => {
-    sidebar = [...document.querySelectorAll('*')].filter((x) => {
+    sidebar = [...document.querySelectorAll('* > * > * > *')].filter((x) => {
       const rect = x.getBoundingClientRect();
-    
+      // const parentRect = x.parentElement.getBoundingClientRect();
+      const uniqueChildrenCount = getUniqueChildrenProps(x).length;
+
       return rect.width > window.innerWidth * 0.1 && // Width >10% of window
-        rect.width < window.innerWidth * 0.5 && // Width <50% of window
+        rect.width < window.innerWidth * 0.4 && // Width <50% of window
         x.children.length > 5 && // Has >5 children
+        uniqueChildrenCount < 5 && // Has <5 unique children props
         findTextWithinParent(x, 'settings'); // "Settings" in within some text within last 5 parents
     }).pop();
-    
-    /* content = [...document.querySelectorAll('*')].filter((x) => {
-      const rect = x.getBoundingClientRect();
-    
-      return rect.width > window.innerWidth * 0.5 && // Width >10% of window
-        rect.width < window.innerWidth * 0.9 && // Width <50% of window
-        (x.children.length > 4 || x.children[1]?.children?.length > 4) && // Has >5 children
-        rect.height > window.innerHeight * 0.8 && // Height >80% of window
-        findTextWithinParent(x, 'settings', 8); // "Settings" in within some text within last 5 parents
-    }).pop(); */
-  
-    // sidebarSelectedClass = [...sidebar.children].find((x) => x.textContent.trim().toLowerCase() === content.children[0].textContent.trim().toLowerCase()).className;
-  
-    // const matchesItemTitle = (el) => (el && (el.textContent.trim().toLowerCase() === sidebar.children[0].textContent.trim().toLowerCase() || el.textContent.trim().toLowerCase() === sidebar.children[1].textContent.trim().toLowerCase())) ? el : false;
-    const matchesItemTitle = (el) => (el && [...sidebar.children].some((x) => el.textContent.trim().toLowerCase() === x.textContent.trim().toLowerCase()));
+
+    sidebar.style.background = 'red';
+
   
     const getContentFromChild = (el) => {
-      return [...el.querySelectorAll('*')].find((x) =>
+      if (el.parentElement.children.length === 2) {
+        const target = el.parentElement.children[1];
+        const rect = target.getBoundingClientRect();
+
+        if (rect.width > window.innerWidth * 0.5) {
+          const findContainer = (x) => {
+            if (x.children.length > 5) return x;
+            return [...x.children].map(findContainer).find((x) => x);
+          };
+
+          console.log('target', target);
+
+          const wanted = findContainer(target);
+
+          console.log('wanted', wanted);
+
+          const parentChildren = wanted.parentElement.children;
+          if (parentChildren.length === 2 && (parentChildren[0].children.length === 0 || parentChildren[0].children[0].children.length === 0)) return wanted.parentElement;
+
+          return wanted;
+        }
+      }
+
+      if (!el.parentElement) return false;
+      return getContentFromChild(el.parentElement);
+
+
+      /* return el && ([...el.querySelectorAll('*')].find((x) =>
         x.getBoundingClientRect().width > window.innerWidth * 0.5 && // Width >50% of window
         matchesItemTitle(x.children[0])
-      ) || getContentFromChild(el.parentElement);
+      ) || getContentFromChild(el.parentElement)); */
     };
   
     content = getContentFromChild(sidebar);
@@ -79,7 +111,6 @@ if you ask for help / support with this (not working, how to use, anything), exp
   
   grab();
 
-  sidebar.style.background = 'red';
   content.style.background = 'blue';
   
   const sidebarItemClasses = {
@@ -226,8 +257,8 @@ if you ask for help / support with this (not working, how to use, anything), exp
       }, 10);
   
       const title = content.children[0];
-  
-      title.childNodes[0].textContent = text;
+
+      findTextNodeWithin(title).textContent = text;
       
       [...content.children].filter((x) => x.textContent !== title.textContent).forEach((x) => x.remove());
   
