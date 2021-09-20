@@ -27,7 +27,7 @@
 
     "content_scripts": [
         {
-            "matches": ["*://*/*"],
+            "matches": ["*://app.element.io/*", "*://app.revolt.chat/*"],
             "js": ["content.js"]
         }
     ],
