@@ -2,6 +2,15 @@
 <html lang="en">
   <head>
     <style>
+      /* App specific accents */
+      [id="app.revolt.chat"] {
+        --accent: #FD6671;
+      }
+
+      [id="app.element.io"] {
+        --accent: #0dbd8b;
+      }
+
       :root {
         --background-primary: #101418;
         --background-secondary: #161A1E;
@@ -60,6 +69,10 @@
       .tab.active {
         background-color: var(--accent);
         color: var(--background-primary);
+      }
+
+      #themes-tab {
+        display: none;
       }
 
       .content {
@@ -141,8 +154,8 @@
 
   <body>
     <div class="tabs">
-      <div class="tab active">Plugins</div>
-      <div class="tab">Themes</div>
+      <div id="plugins-tab" class="tab active">Plugins</div>
+      <div id="themes-tab" class="tab">Themes</div>
     </div>
 
     <div class="content">
@@ -195,6 +208,8 @@
 
         if (!plugins[host]) return;
 
+        document.body.id = host;
+
         const hostEl = document.createElement('div');
         hostEl.className = 'host';
         hostEl.textContent = host;
@@ -237,6 +252,23 @@
       };
 
       init();
+
+      const themesTab = document.getElementById('themes-tab');
+      const pluginsTab = document.getElementById('plugins-tab');
+
+      pluginsTab.onclick = () => {
+        pluginsTab.classList.add('active');
+        themesTab.classList.remove('active');
+
+        makePluginContent(document.querySelector('.content'));
+      };
+
+      themesTab.onclick = () => {
+        pluginsTab.classList.remove('active');
+        themesTab.classList.add('active');
+
+        document.querySelector('.content').innerHTML = '';
+      };
     </script>
   </body>
 </html>
