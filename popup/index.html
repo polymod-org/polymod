@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <style>
+      :root {
+        --background-primary: #101418;
+        --background-secondary: #161A1E;
+        --background-tertiary: #060A0E;
+        --accent: #f2777a;
+
+        --foreground-primary: rgba(255, 255, 255, 0.97);
+      }
+
+      @font-face {
+        font-family: 'Noto Sans';
+        src: url('https://store.goosemod.com/NotoSans-Medium.ttf') format('truetype');
+      }
+
+      * {
+        font-family: 'Noto Sans', sans-serif;
+        box-sizing: border-box;
+
+        color: var(--foreground-primary);
+      }
+
+      html, body {
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        width: 250px;
+        height: 400px;
+      }
+
+      body {
+        background-color: var(--background-primary);
+      }
+
+      .tabs {
+        width: 100%;
+        height: 40px;
+
+        display: flex;
+      }
+
+      .tab {
+        background-color: var(--background-secondary);
+
+        padding: 8px;
+        
+        flex: 1 0 0;
+
+        text-align: center;
+        line-height: 20px;
+
+        cursor: pointer;
+      }
+
+      .tab.active {
+        background-color: var(--accent);
+        color: var(--background-primary);
+      }
+
+      .content {
+        display: flex;
+        flex-flow: column;
+
+        width: 100%;
+      }
+
+      .host {
+        font-weight: 600;
+        font-size: 16px;
+        margin-bottom: 12px;
+        margin-left: 6px;
+        margin-top: 6px;
+      }
+
+      .plugin {
+        position: relative;
+        display: flex;
+        justify-content: space-around;
+
+        height: 40px;
+        width: 100%;
+
+        line-height: 20px;
+
+        background-color: var(--background-secondary);
+
+        padding: 8px;
+      }
+
+      .plugin-name {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+
+        width: 80%;
+
+        margin-right: 5px;
+      }
+
+.switch input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.switch.on {
+  background: var(--accent);
+}
+
+.switch, .switch div {
+  
+}
+
+.switch {
+  display: inline-block;
+  font-size: 18px; /* 1 */
+  height: 1em;
+  width: 2em;
+  background: var(--background-tertiary);
+  padding: 2px;
+  /* border-radius: 1em; */
+}
+
+.switch div {
+  margin-top: 1px;
+  height: calc(1em - 5px);
+  width: calc(1em - 5px);
+  /* border-radius: 1em; */
+  background: #ddd;
+  box-shadow: 0 0.1em 0.3em rgba(0,0,0,0.3);
+  transition: all 300ms;
+}
+
+.switch input:checked + div {
+  transform: translate3d(calc(100% + 5px), 0, 0);
+}
+
+    </style>
+  </head>
+
+  <body>
+    <div class="tabs">
+      <div class="tab active">Plugins</div>
+      <div class="tab">Themes</div>
+    </div>
+
+    <div class="content">
+
+    </div>
+
+    <script>
+      const getHost = () => chrome.extension.getBackgroundPage().host;
+
+      const plugins = {
+        'app.revolt.chat': [ 'DTCompat' ],
+        'app.element.io': [ 'DTCompat' ]
+      };
+
+      chrome.extension.getBackgroundPage().plugins;
+
+      let pluginsEnabled;
+
+      const makeSwitch = (listener, initial = false) => {
+        const switchEl = document.createElement('label');
+        switchEl.className = 'switch';
+        if (initial) switchEl.classList.add('on');
+
+        const switchInputChildEl = document.createElement('input');
+        switchInputChildEl.type = 'checkbox';
+        switchInputChildEl.checked = initial;
+
+        switchInputChildEl.onchange = () => {
+          const value = switchInputChildEl.checked;
+          listener(value);
+
+          setTimeout(() => {
+            if (value) switchEl.classList.add('on');
+              else switchEl.classList.remove('on');
+          }, 150);
+        };
+
+        switchEl.appendChild(switchInputChildEl);
+
+        const switchDivChildEl = document.createElement('div');
+        switchEl.appendChild(switchDivChildEl);
+
+        return switchEl;
+      };
+
+      const makePluginContent = (target) => {
+        target.innerHTML = '';
+
+        const host = getHost();
+
+        if (!plugins[host]) return;
+
+        const hostEl = document.createElement('div');
+        hostEl.className = 'host';
+        hostEl.textContent = host;
+
+        target.appendChild(hostEl);
+
+        for (const plugin of plugins[host]) {
+          const el = document.createElement('div');
+          el.className = 'plugin';
+
+          const nameEl = document.createElement('div');
+          nameEl.className = 'plugin-name';
+          nameEl.textContent = plugin;
+
+          el.appendChild(nameEl);
+
+          const switchEl = makeSwitch((value) => {
+            console.log(value);
+
+            pluginsEnabled[host + '-' + plugin] = value;
+            chrome.storage.local.set({ enabled: JSON.stringify(pluginsEnabled) });
+          }, pluginsEnabled[host + '-' + plugin]);
+
+          el.appendChild(switchEl);
+
+          target.appendChild(el);
+        }
+      };
+
+      const init = async () => {
+        await new Promise((res) => {
+          chrome.storage.local.get(null, (data) => {
+            pluginsEnabled = JSON.parse(data.enabled || '{}');
+
+            res();
+          });
+        });
+
+        makePluginContent(document.querySelector('.content'));
+      };
+
+      init();
+    </script>
+  </body>
+</html>
