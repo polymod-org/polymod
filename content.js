@@ -11,7 +11,7 @@ const init = async () => {
     });
   });
 
-  plugins = await (await fetch(`https://polyglot-mod.github.io/plugins/plugins.json`)).json();
+  plugins = await (await fetch(`https://polyglot-mod.github.io/plugins/plugins.json?_${Date.now()}`)).json();
   
   setTimeout(loadPlugins, 5000);
 };
@@ -28,6 +28,11 @@ const loadPlugins = () => {
   for (const plugin of plugins[host].filter((x) => pluginsEnabled[host + '-' + x])) {
     loadPlugin(host, plugin);
   }
+
+  for (const plugin of plugins['themes'].filter((x) => pluginsEnabled[host + '-' + x])) {
+    loadPlugin('themes', plugin);
+  }
+
 };
 
 const sendHost = () => {

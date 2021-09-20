@@ -71,10 +71,6 @@
         color: var(--background-primary);
       }
 
-      #themes-tab {
-        display: none;
-      }
-
       .content {
         display: flex;
         flex-flow: column;
@@ -165,6 +161,11 @@
     <script>
       const getHost = () => chrome.extension.getBackgroundPage().host;
 
+      const hostFriendlyNames = {
+        'app.revolt.chat': 'Revolt',
+        'app.element.io': 'Element'
+      };
+
       let pluginsEnabled, plugins;
 
       const makeSwitch = (listener, initial = false) => {
@@ -194,7 +195,7 @@
         return switchEl;
       };
 
-      const makePluginContent = (target) => {
+      const makePluginContent = (target, themes = false) => {
         target.innerHTML = '';
 
         const host = getHost();
@@ -205,11 +206,11 @@
 
         const hostEl = document.createElement('div');
         hostEl.className = 'host';
-        hostEl.textContent = host;
+        hostEl.textContent = themes ? 'Themes' : 'Plugins for ' + hostFriendlyNames[host];
 
         target.appendChild(hostEl);
 
-        for (const plugin of plugins[host]) {
+        for (const plugin of (themes ? plugins.themes : plugins[host])) {
           const el = document.createElement('div');
           el.className = 'plugin';
 
@@ -241,7 +242,7 @@
           });
         });
 
-        plugins = await (await fetch(`https://polyglot-mod.github.io/plugins/plugins.json`)).json();
+        plugins = await (await fetch(`https://polyglot-mod.github.io/plugins/plugins.json?_${Date.now()}`)).json();
 
         makePluginContent(document.querySelector('.content'));
       };
@@ -255,14 +256,14 @@
         pluginsTab.classList.add('active');
         themesTab.classList.remove('active');
 
-        makePluginContent(document.querySelector('.content'));
+        makePluginContent(document.querySelector('.content'), false);
       };
 
       themesTab.onclick = () => {
         pluginsTab.classList.remove('active');
         themesTab.classList.add('active');
 
-        document.querySelector('.content').innerHTML = '';
+        makePluginContent(document.querySelector('.content'), true);
       };
     </script>
   </body>
