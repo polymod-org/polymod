@@ -5,7 +5,7 @@ const cspAllowAll = [
   'font-src'
 ];
 
-chrome.webRequest.onHeadersReceived.addListener(({ responseHeaders, url }) => {
+/* chrome.webRequest.onHeadersReceived.addListener(({ responseHeaders, url }) => {
   let csp = responseHeaders.find((x) => x.name === 'content-security-policy');
 
   if (csp) {
@@ -21,12 +21,12 @@ chrome.webRequest.onHeadersReceived.addListener(({ responseHeaders, url }) => {
 
   {
     urls: [
-      '*://*/*'
+      '*://*\/*'
     ]
   },
 
   ['blocking', 'responseHeaders']
-);
+); */
 
 
 chrome.runtime.onMessage.addListener((msg) => {
