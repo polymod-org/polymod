@@ -165,14 +165,7 @@
     <script>
       const getHost = () => chrome.extension.getBackgroundPage().host;
 
-      const plugins = {
-        'app.revolt.chat': [ 'DTCompat' ],
-        'app.element.io': [ 'DTCompat' ]
-      };
-
-      chrome.extension.getBackgroundPage().plugins;
-
-      let pluginsEnabled;
+      let pluginsEnabled, plugins;
 
       const makeSwitch = (listener, initial = false) => {
         const switchEl = document.createElement('label');
@@ -247,6 +240,8 @@
             res();
           });
         });
+
+        plugins = await (await fetch(`https://polyglot-mod.github.io/plugins/plugins.json`)).json();
 
         makePluginContent(document.querySelector('.content'));
       };

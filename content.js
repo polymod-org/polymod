@@ -1,29 +1,17 @@
 const importHost = 'https://polyglot-mod.github.io/plugins';
 
-const plugins = {
-  'app.revolt.chat': [ 'DTCompat' ],
-  'app.element.io': [ 'DTCompat' ]
-};
-
-let pluginsEnabled;
+let plugins, pluginsEnabled;
 
 const init = async () => {
   await new Promise((res) => {
     chrome.storage.local.get(null, (data) => {
       pluginsEnabled = JSON.parse(data.enabled || '{}');
-      
-      for (const host in plugins) {
-        for (const plugin of plugins[host]) {
-          const id = host + '-' + plugin;
-          
-          if (pluginsEnabled[id] === undefined) pluginsEnabled[id] = true;
-        }
-      }
-      
-      chrome.storage.local.set({ enabled: JSON.stringify(pluginsEnabled) });
+
       res();
     });
   });
+
+  plugins = await (await fetch(`https://polyglot-mod.github.io/plugins/plugins.json`)).json();
   
   setTimeout(loadPlugins, 5000);
 };
