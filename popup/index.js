@@ -38,9 +38,9 @@ const makeSwitch = (listener, initial = false) => {
   return switchEl;
 };
 
-const makeOptions = (target, header, items) => {
-  target.innerHTML = '';
-  
+const makeOptions = (target, header, items, clear = true) => {
+  if (clear) target.innerHTML = '';
+
   const hostEl = document.createElement('div');
   hostEl.className = 'header';
   hostEl.textContent = header;
@@ -66,12 +66,10 @@ const makeOptions = (target, header, items) => {
 };
 
 const makePluginContent = (target, themes = false) => {
-  let host = getHost();
+  const host = getHost();
   
   if (!plugins[host]) return;
-  
-  document.body.id = host;
-  
+
   makeOptions(target, themes ? 'Themes' : 'Plugins for ' + hostFriendlyNames[host], (themes ? plugins.themes : plugins[host]).map((x) => ([
     x,
     pluginsEnabled[host + '-' + x],
@@ -151,5 +149,13 @@ settingsTab.onclick = () => {
 };
 
 const openSettings = () => {
-  makeOptions(document.querySelector('.content'), 'Settings', [].map((x) => ([x, localStorage.getItem(x) === 'true', (value) => localStorage.setItem(x, value)])));
+  const target = document.querySelector('.content');
+
+  target.innerHTML = '';
+
+  makeOptions(target, 'UI', ['Disable App Accents'].map((x) => ([x, localStorage.getItem(x) === 'true', (value) => localStorage.setItem(x, value)])), false);
 };
+
+document.body.id = getHost();
+
+if (localStorage.getItem('Disable App Accents') === 'true') document.body.classList.add('app-accents');

@@ -1,13 +1,13 @@
 /* App specific accents */
-[id="app.revolt.chat"] {
+.app-accents[id="app.revolt.chat"] {
   --accent: #FD6671;
 }
 
-[id="app.element.io"] {
+.app-accents[id="app.element.io"] {
   --accent: #0dbd8b;
 }
 
-[id="www.guilded.gg"] {
+.app-accents[id="www.guilded.gg"] {
   --accent: #ecb200;
 }
 
@@ -15,7 +15,7 @@
   --background-primary: #101418;
   --background-secondary: #161A1E;
   --background-tertiary: #060A0E;
-  --accent: #f2777a;
+  --accent: #808488;
   
   --foreground-primary: rgba(255, 255, 255, 0.97);
 }
