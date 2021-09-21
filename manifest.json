@@ -27,7 +27,7 @@
 
     "content_scripts": [
         {
-            "matches": ["*://app.element.io/*", "*://app.revolt.chat/*"],
+            "matches": ["*://app.element.io/*", "*://app.revolt.chat/*", "*://www.guilded.gg/*"],
             "js": ["content.js"]
         }
     ],
@@ -37,7 +37,8 @@
         "webRequest",
         "webRequestBlocking",
         "*://app.element.io/*",
-        "*://app.revolt.chat/*"
+        "*://app.revolt.chat/*",
+        "*://www.guilded.gg/*"
     ],
 
     "manifest_version": 2
