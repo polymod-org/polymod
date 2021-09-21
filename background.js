@@ -30,7 +30,7 @@ const cspAllowAll = [
 
 const ports = {};
 
-const sendHostMsg = (host, msg) => {
+window.sendHostMsg = (host, msg) => {
   ports[host].postMessage(msg);
 };
 
