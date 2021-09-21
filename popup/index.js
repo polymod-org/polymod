@@ -1,5 +1,8 @@
 const getHost = () => chrome.extension.getBackgroundPage().host;
 
+const hotLoadPlugin = (host, name) => chrome.extension.getBackgroundPage().sendHostMsg(getHost(), { loadPlugin: [ host, name ] })
+const hotUnloadPlugin = (name) => chrome.extension.getBackgroundPage().sendHostMsg(getHost(), { unLoadPlugin: [ name ] })
+
 const hostFriendlyNames = {
   'app.revolt.chat': 'Revolt',
   'app.element.io': 'Element'
@@ -74,6 +77,9 @@ const makePluginContent = (target, themes = false) => {
     (value) => {
       console.log(value);
       
+      if (value) hotLoadPlugin(host, x);
+        else hotUnloadPlugin(x);
+
       pluginsEnabled[host + '-' + x] = value;
       chrome.storage.local.set({ enabled: JSON.stringify(pluginsEnabled) });
     }

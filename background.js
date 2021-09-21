@@ -28,13 +28,17 @@ const cspAllowAll = [
   ['blocking', 'responseHeaders']
 ); */
 
+const ports = {};
+
+const sendHostMsg = (host, msg) => {
+  ports[host].postMessage(msg);
+};
+
 chrome.runtime.onConnect.addListener((port) => {
-  console.log(port.sender.tab);
-});
+  const host = new URL(port.sender.tab.url).host;
+  ports[host] = port;
 
-chrome.runtime.onMessage.addListener((msg) => {
-  if (!msg.host) return;
-
-  console.log(msg.host);
-  window.host = msg.host;
+  port.onMessage.addListener((msg) => {
+    if (msg.active) window.host = host;
+  });
 });

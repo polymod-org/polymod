@@ -57,7 +57,7 @@ port.onMessage.addListener((msg) => {
 });
 
 const sendHost = () => {
-  chrome.runtime.sendMessage({ host: location.host });
+  port.postMessage({ active: true });
 };
 sendHost();
 
