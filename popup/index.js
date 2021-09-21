@@ -158,4 +158,4 @@ const openSettings = () => {
 
 document.body.id = getHost();
 
-if (localStorage.getItem('Disable App Accents') === 'true') document.body.classList.add('app-accents');
+if (localStorage.getItem('Disable App Accents') === 'false') document.body.classList.add('app-accents');
