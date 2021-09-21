@@ -21,7 +21,22 @@ const init = async () => {
 const loadPlugin = async (host, name) => {
   console.log('loadPlugin', host, name);
 
-  loaded[name] = await import(`${importHost}/${host}/${name}.js?_${Date.now()}`);
+  if (host === 'themes') {
+    const CSS = await import(`https://polyglot-mod.github.io/standard/src/css.js?_${Date.now()}`);
+
+    loaded[name] = {
+      load: async () => {
+        CSS.add(await (await fetch(`${importHost}/${host}/${name}.css?_${Date.now()}`)).text());
+      },
+
+      unload: () => {
+        CSS.remove();
+      }
+    }
+  } else {
+    loaded[name] = await import(`${importHost}/${host}/${name}.js?_${Date.now()}`);
+  }
+
   loaded[name].load();
 };
 
