@@ -7,6 +7,10 @@
   --accent: #0dbd8b;
 }
 
+[id="www.guilded.gg"] {
+  --accent: #ecb200;
+}
+
 :root {
   --background-primary: #101418;
   --background-secondary: #161A1E;
