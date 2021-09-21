@@ -87,6 +87,8 @@ body {
   
   display: flex;
   align-items: center;
+
+  margin-left: 6px;
 }
 
 .content {
