@@ -28,7 +28,7 @@ const cspAllowAll = [
   ['blocking', 'responseHeaders']
 ); */
 
-browser.runtime.onConnect.addListener((port) => {
+chrome.runtime.onConnect.addListener((port) => {
   console.log(port.sender.tab);
 });
 
