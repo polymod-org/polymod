@@ -44,7 +44,7 @@ const loadPlugins = () => {
   }
 };
 
-const port = browser.runtime.connect({ name: location.host });
+const port = chrome.runtime.connect({ name: location.host });
 
 port.onMessage.addListener((msg) => {
   if (msg.loadPlugin) {
