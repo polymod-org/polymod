@@ -76,7 +76,7 @@ body {
   color: var(--background-primary);
 }
 
-.tab.active svg {
+.tab.active svg path {
   color: var(--background-primary);
 }
 
@@ -94,6 +94,7 @@ body {
 
   margin-left: 6px;
 }
+
 
 .content {
   display: flex;
