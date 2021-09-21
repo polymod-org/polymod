@@ -15,7 +15,7 @@ const init = async () => {
 
   plugins = await (await fetch(`https://polyglot-mod.github.io/plugins/plugins.json?_${Date.now()}`)).json();
   
-  setTimeout(loadPlugins, 5000);
+  setTimeout(loadPlugins, 3000);
 };
 
 const loadPlugin = async (host, name) => {
