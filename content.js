@@ -1,6 +1,8 @@
 const importHost = 'https://polyglot-mod.github.io/plugins';
 
 let plugins, pluginsEnabled;
+let loaded = {};
+
 
 const init = async () => {
   await new Promise((res) => {
@@ -16,13 +18,21 @@ const init = async () => {
   setTimeout(loadPlugins, 5000);
 };
 
-const loadPlugins = () => {
-  const loadPlugin = async (host, name) => {
-    console.log('loadPlugin', host, name);
-    const js = await (await fetch(`${importHost}/${host}/${name}.js?_${Date.now()}`)).text();
-    eval('(async () => {\n' + js + '\n})();');
-  };
+const loadPlugin = async (host, name) => {
+  console.log('loadPlugin', host, name);
 
+  loaded[name] = await import(`${importHost}/${host}/${name}.js?_${Date.now()}`);
+  loaded[name].load();
+};
+
+const unloadPlugin = async (name) => {
+  console.log('unloadPlugin', name);
+
+  loaded[name].unload();
+  delete loaded[name];
+}
+
+const loadPlugins = () => {
   const host = location.host;
 
   for (const plugin of plugins[host].filter((x) => pluginsEnabled[host + '-' + x])) {
@@ -32,8 +42,19 @@ const loadPlugins = () => {
   for (const plugin of plugins['themes'].filter((x) => pluginsEnabled[host + '-' + x])) {
     loadPlugin('themes', plugin);
   }
-
 };
+
+const port = browser.runtime.connect({ name: location.host });
+
+port.onMessage.addListener((msg) => {
+  if (msg.loadPlugin) {
+    loadPlugin(...msg.loadPlugin);
+  }
+
+  if (msg.unloadPlugin) {
+    unloadPlugin(...msg.unloadPlugin);
+  }
+});
 
 const sendHost = () => {
   chrome.runtime.sendMessage({ host: location.host });
