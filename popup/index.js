@@ -6,7 +6,8 @@ const hotUnloadPlugin = (name) => chrome.extension.getBackgroundPage().sendHostM
 const hostFriendlyNames = {
   'app.revolt.chat': 'Revolt',
   'app.element.io': 'Element',
-  'www.guilded.gg': 'Guilded'
+  'www.guilded.gg': 'Guilded',
+  'app.slack.com': 'Slack'
 };
 
 let pluginsEnabled, plugins;

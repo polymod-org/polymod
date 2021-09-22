@@ -11,6 +11,10 @@
   --accent: #ecb200;
 }
 
+.app-accents[id="app.slack.com"] {
+  --accent: rgb(205, 37, 83);
+}
+
 :root {
   --background-primary: #101418;
   --background-secondary: #161A1E;

@@ -27,7 +27,7 @@
 
     "content_scripts": [
         {
-            "matches": ["*://app.element.io/*", "*://app.revolt.chat/*", "*://www.guilded.gg/*"],
+            "matches": ["*://app.element.io/*", "*://app.revolt.chat/*", "*://www.guilded.gg/*", "*://app.slack.com/*"],
             "js": ["content.js"]
         }
     ],
@@ -38,7 +38,8 @@
         "webRequestBlocking",
         "*://app.element.io/*",
         "*://app.revolt.chat/*",
-        "*://www.guilded.gg/*"
+        "*://www.guilded.gg/*",
+        "*://app.slack.com/*"
     ],
 
     "manifest_version": 2
