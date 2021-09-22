@@ -72,7 +72,7 @@ const makePluginContent = (target, themes = false) => {
   if (!plugins[host]) return;
 
   makeOptions(target, themes ? 'Themes' : 'Plugins for ' + hostFriendlyNames[host], (themes ? plugins.themes : plugins[host]).map((x) => ([
-    x,
+    x.split('.').slice(0, -1).join('.'),
     pluginsEnabled[host + '-' + x],
     (value) => {
       console.log(value);
