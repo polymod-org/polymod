@@ -21,7 +21,7 @@ const init = async () => {
 const loadPlugin = async (host, name) => {
   console.log('loadPlugin', host, name);
 
-  const ext = name.split('.').slice(0, -1).join('.');
+  const ext = name.split('.').pop();
   if (ext === 'css') {
     const CSS = await import(`https://polyglot-mod.github.io/standard/src/css.js?_${Date.now()}`);
 
