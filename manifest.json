@@ -27,7 +27,7 @@
 
     "content_scripts": [
         {
-            "matches": ["*://app.element.io/*", "*://app.revolt.chat/*", "*://www.guilded.gg/*", "*://app.slack.com/*"],
+            "matches": ["*://app.element.io/*", "*://app.revolt.chat/*", "*://www.guilded.gg/*", "*://app.slack.com/*", "*://teams.microsoft.com/*"],
             "js": ["content.js"]
         }
     ],
@@ -39,7 +39,8 @@
         "*://app.element.io/*",
         "*://app.revolt.chat/*",
         "*://www.guilded.gg/*",
-        "*://app.slack.com/*"
+        "*://app.slack.com/*",
+        "*://teams.microsoft.com/*"
     ],
 
     "manifest_version": 2
