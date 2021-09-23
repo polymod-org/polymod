@@ -1,2 +1,3 @@
 # polyglot
-"Polyglot" project. A mod for all chat apps.
+
+A new cross-site mod for various chat apps.
