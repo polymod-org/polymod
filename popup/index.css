@@ -15,6 +15,10 @@
   --accent: rgb(205, 37, 83);
 }
 
+.app-accents[id="teams.microsoft.com"] {
+  --accent: #9ea2ff;
+}
+
 :root {
   --background-primary: #101418;
   --background-secondary: #161A1E;
