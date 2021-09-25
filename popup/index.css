@@ -164,7 +164,7 @@ body {
 }
 
 .switch.on {
-  background: var(--accent);
+  background-color: var(--accent);
 }
 
 .switch, .switch div {
@@ -172,11 +172,13 @@ body {
 }
 
 .switch {
+  transition: background-color .3s;
+
   display: inline-block;
   font-size: 18px;
   height: 1em;
   width: 2em;
-  background: var(--background-tertiary);
+  background-color: var(--background-tertiary);
   padding: 2px;
 }
 
