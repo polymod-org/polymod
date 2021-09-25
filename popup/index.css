@@ -81,8 +81,19 @@ body {
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
 }
 
-.tab.active {
+#tab-highlight {
+  position: absolute;
+  transition: left 0.3s ease-in-out, width 0.25s 0.10s, border-radius 0.25s 0.10s;
+
+  border-radius: 1em;
+
+  z-index: -1;
+
   background-color: var(--accent);
+}
+
+.tab.active {
+  background-color: transparent;
   color: var(--background-primary);
 }
 

@@ -190,19 +190,18 @@ const init = async () => {
   plugins = await (await fetch(`https://polyglot-mod.github.io/plugins/plugins.json?_${Date.now()}`)).json();
   
   const activeTab = localStorage.getItem('activeTab') || 'plugins';
-  
-  if (activeTab === 'themes') {
-    themesTab.classList.add('active');
-    pluginsTab.classList.remove('active');
-  }
-  
+
+  const tabs = {
+    'plugins': pluginsTab,
+    'themes': themesTab,
+    'settings': settingsTab
+  };
+
+  transitionActiveTab(tabs[activeTab]);
+
+
   if (activeTab === 'settings') {
-    settingsTab.classList.add('active');
-    pluginsTab.classList.remove('active');
-    
-    openSettings();
-    
-    return;
+    return openSettings();
   }
   
   makePluginContent(document.querySelector('.content'), activeTab === 'themes');
@@ -214,28 +213,41 @@ const themesTab = document.getElementById('themes-tab');
 const pluginsTab = document.getElementById('plugins-tab');
 const settingsTab = document.getElementById('settings-tab');
 
+const tabHighlight = document.getElementById('tab-highlight');
+
+const transitionActiveTab = (el) => {
+  [themesTab, pluginsTab, settingsTab].forEach((x) => x.classList.remove('active'));
+
+  const box = el.getBoundingClientRect();
+
+  tabHighlight.style.borderRadius = getComputedStyle(el).borderRadius;
+
+  tabHighlight.style.left = box.left + 'px';
+  tabHighlight.style.top = box.top + 'px';
+  tabHighlight.style.width = box.width + 'px';
+  tabHighlight.style.height = box.height + 'px';
+
+  setTimeout(() => {
+    el.classList.add('active');
+  }, 150);
+};
+
 pluginsTab.onclick = () => {
-  pluginsTab.classList.add('active');
-  themesTab.classList.remove('active');
-  settingsTab.classList.remove('active');
+  transitionActiveTab(pluginsTab);
   
   makePluginContent(document.querySelector('.content'), false);
   localStorage.setItem('activeTab', 'plugins');
 };
 
 themesTab.onclick = () => {
-  pluginsTab.classList.remove('active');
-  themesTab.classList.add('active');
-  settingsTab.classList.remove('active');
+  transitionActiveTab(themesTab);
   
   makePluginContent(document.querySelector('.content'), true);
   localStorage.setItem('activeTab', 'themes');
 };
 
 settingsTab.onclick = () => {
-  pluginsTab.classList.remove('active');
-  themesTab.classList.remove('active');
-  settingsTab.classList.add('active');
+  transitionActiveTab(settingsTab);
   
   openSettings();
   localStorage.setItem('activeTab', 'settings');
@@ -246,7 +258,11 @@ const openSettings = () => {
 
   target.innerHTML = '';
 
-  makeOptions(target, 'UI', ['Disable App Accents', 'New UI'].map((x) => ([x, localStorage.getItem(x) === 'true', (value) => localStorage.setItem(x, value)])), false);
+  makeOptions(target, 'UI', ['Disable App Accents', 'New UI'].map((x) => ([x, localStorage.getItem(x) === 'true', (value) => {
+    localStorage.setItem(x, value);
+
+    setTimeout(() => { location.reload() }, 300);
+  }])), false);
 };
 
 document.body.id = getHost();
