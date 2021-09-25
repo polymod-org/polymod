@@ -28,7 +28,7 @@ const makeSwitch = (listener, initial = false) => {
     setTimeout(() => {
       if (value) switchEl.classList.add('on');
       else switchEl.classList.remove('on');
-    }, 150);
+    }, 160);
 
     listener(value);
   };
