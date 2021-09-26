@@ -56,7 +56,20 @@ const makeOptions = (target, header, items, clear = true) => {
     
     const nameEl = document.createElement('div');
     nameEl.className = 'item-name';
-    nameEl.textContent = item[0];
+
+    const nameTitleEl = document.createElement('span');
+    nameTitleEl.textContent = item[0].title;
+
+    const nameSubEl = document.createElement('span');
+    
+    const nameSubImgEl = document.createElement('img');
+    nameSubImgEl.src = item[0].img;
+
+    const nameSubTextEl = document.createElement('span');
+    nameSubTextEl.textContent = item[0].sub;
+
+    nameSubEl.append(item[0].img ? nameSubImgEl : '', nameSubTextEl);
+    nameEl.append(nameTitleEl, nameSubEl);
     
     el.appendChild(nameEl);
     
@@ -76,25 +89,25 @@ const makePluginContent = (target, themes = false) => {
   target.innerHTML = '';
 
   makeOptions(target, themes ? 'Themes' : 'Plugins for ' + hostFriendlyNames[host], (themes ? plugins.themes : plugins[host]).map((x) => ([
-    x.split('.').slice(0, -1).join('.'),
-    pluginsEnabled[host + '-' + x],
+    { title: x.file.split('.').slice(0, -1).join('.'), img: x.author.picture, sub: x.author.name },
+    pluginsEnabled[host + '-' + x.file],
     (value) => {
-      if (value) hotLoadPlugin(themes ? 'themes' : host, x);
-        else hotUnloadPlugin(x);
+      if (value) hotLoadPlugin(themes ? 'themes' : host, x.file);
+        else hotUnloadPlugin(x.file);
 
-      pluginsEnabled[host + '-' + x] = value;
+      pluginsEnabled[host + '-' + x.file] = value;
       chrome.storage.local.set({ enabled: JSON.stringify(pluginsEnabled) });
     }
   ])), false);
 
   if (!themes) makeOptions(target, 'Cross-app Plugins', plugins['generic'].map((x) => ([
-    x.split('.').slice(0, -1).join('.'),
-    pluginsEnabled[host + '-' + x],
+    { title: x.file.split('.').slice(0, -1).join('.'), img: x.author.picture, sub: x.author.name },
+    pluginsEnabled[host + '-' + x.file],
     (value) => {
-      if (value) hotLoadPlugin('generic', x);
-        else hotUnloadPlugin(x);
+      if (value) hotLoadPlugin('generic', x.file);
+        else hotUnloadPlugin(x.file);
 
-      pluginsEnabled[host + '-' + x] = value;
+      pluginsEnabled[host + '-' + x.file] = value;
       chrome.storage.local.set({ enabled: JSON.stringify(pluginsEnabled) });
     }
   ])), false);
@@ -180,11 +193,19 @@ const openSettings = () => {
 
   target.innerHTML = '';
 
-  makeOptions(target, 'UI', ['Disable App Accents'].map((x) => ([x, localStorage.getItem(x) === 'true', (value) => {
-    localStorage.setItem(x, value);
+  const settingDescriptions = {
+    'Disable App Accents': 'Disables app-specific theming of polyglot\'s UI'
+  };
 
-    setTimeout(() => { location.reload() }, 300);
-  }])), false);
+  makeOptions(target, 'UI', ['Disable App Accents'].map((x) => ([
+    { title: x, sub: settingDescriptions[x] },
+    localStorage.getItem(x) === 'true',
+    (value) => {
+      localStorage.setItem(x, value);
+
+      setTimeout(() => { location.reload() }, 300);
+    }
+  ])), false);
 };
 
 document.body.id = getHost();

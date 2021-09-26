@@ -52,15 +52,15 @@ const loadPlugins = () => {
   const host = location.host;
 
   for (const plugin of plugins[host].filter((x) => pluginsEnabled[host + '-' + x])) {
-    loadPlugin(host, plugin);
+    loadPlugin(host, plugin.file);
   }
 
   for (const plugin of plugins['themes'].filter((x) => pluginsEnabled[host + '-' + x])) {
-    loadPlugin('themes', plugin);
+    loadPlugin('themes', plugin.file);
   }
 
   for (const plugin of plugins['generic'].filter((x) => pluginsEnabled[host + '-' + x])) {
-    loadPlugin('generic', plugin);
+    loadPlugin('generic', plugin.file);
   }
 };
 
