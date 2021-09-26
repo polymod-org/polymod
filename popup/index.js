@@ -151,7 +151,7 @@ const transitionActiveTab = (el) => {
 
   setTimeout(() => {
     el.classList.add('active');
-  }, 150);
+  }, 130);
 };
 
 pluginsTab.onclick = () => {
