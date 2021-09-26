@@ -165,12 +165,12 @@ body {
   /* background-color: var(--background-secondary); */
 
   padding: 4px 8px;
+  padding-top: 6px;
+  padding-bottom: 8px;
 }
 
 .item:not(:last-child) {
   border-bottom: 3px solid var(--background-tertiary);
-  padding-top: 6px;
-  padding-bottom: 8px;
 }
 
 .item-name {
