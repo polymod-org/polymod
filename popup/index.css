@@ -132,6 +132,10 @@ body {
   margin-top: 6px;
 }
 
+.header:not(:first-child) {
+  margin-top: 18px;
+}
+
 .item {
   display: flex;
   justify-content: space-around;
@@ -234,45 +238,4 @@ body {
 
 .plugin-button svg {
   filter: drop-shadow(0 0.1em 0.3em rgba(0, 0, 0, 0.4));
-}
-
-.header {
-  order: -2;
-}
-
-.item.added {
-  order: -1;
-
-  /* background-color: hsla(139, 47.3%, 43.9%, 0.2); */
-}
-
-.item.added.last {
-  position: relative;
-  margin-bottom: 33.7px;
-}
-
-.item.added::after {
-  content: '';
-  display: block;
-  position: absolute;
-
-  top: 40px;
-
-  opacity: 0;
-  width: 20%;
-
-  transition: opacity .2s, width .4s;
-}
-
-.item.added.last:not(.moving):not(:last-child)::after {
-  transition: opacity .2s, width .4s;
-
-  opacity: 0.7;
-
-  width: 80%;
-  height: 2px;
-
-  background-color: var(--accent);
-
-  margin: 16px 0;
 }

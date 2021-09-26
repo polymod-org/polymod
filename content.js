@@ -58,6 +58,10 @@ const loadPlugins = () => {
   for (const plugin of plugins['themes'].filter((x) => pluginsEnabled[host + '-' + x])) {
     loadPlugin('themes', plugin);
   }
+
+  for (const plugin of plugins['generic'].filter((x) => pluginsEnabled[host + '-' + x])) {
+    loadPlugin('generic', plugin);
+  }
 };
 
 const port = chrome.runtime.connect({ name: location.host });

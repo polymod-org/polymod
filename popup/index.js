@@ -73,6 +73,8 @@ const makePluginContent = (target, themes = false) => {
   
   if (!plugins[host]) return;
 
+  target.innerHTML = '';
+
   makeOptions(target, themes ? 'Themes' : 'Plugins for ' + hostFriendlyNames[host], (themes ? plugins.themes : plugins[host]).map((x) => ([
     x.split('.').slice(0, -1).join('.'),
     pluginsEnabled[host + '-' + x],
@@ -83,7 +85,19 @@ const makePluginContent = (target, themes = false) => {
       pluginsEnabled[host + '-' + x] = value;
       chrome.storage.local.set({ enabled: JSON.stringify(pluginsEnabled) });
     }
-  ])));
+  ])), false);
+
+  if (!themes) makeOptions(target, 'Cross-app Plugins', plugins['generic'].map((x) => ([
+    x.split('.').slice(0, -1).join('.'),
+    pluginsEnabled[host + '-' + x],
+    (value) => {
+      if (value) hotLoadPlugin('generic', x);
+        else hotUnloadPlugin(x);
+
+      pluginsEnabled[host + '-' + x] = value;
+      chrome.storage.local.set({ enabled: JSON.stringify(pluginsEnabled) });
+    }
+  ])), false);
 };
 
 const init = async () => {
