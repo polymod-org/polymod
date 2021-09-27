@@ -1,8 +1,7 @@
-const importHost = 'https://polyglot-mod.github.io/plugins';
-
 let plugins, pluginsEnabled;
 let loaded = {};
 
+let env = {};
 
 const init = async () => {
   await new Promise((res) => {
@@ -13,7 +12,9 @@ const init = async () => {
     });
   });
 
-  plugins = await (await fetch(`https://polyglot-mod.github.io/plugins/plugins.json?_${Date.now()}`)).json();
+  env = await (await fetch(chrome.runtime.getURL('env.json'))).json();
+
+  plugins = await (await fetch(`${env.endpoints.plugins}/plugins.json?_${Date.now()}`)).json();
   
   setTimeout(loadPlugins, 3000);
 };
@@ -27,7 +28,7 @@ const loadPlugin = async (host, name) => {
 
     loaded[name] = {
       load: async () => {
-        CSS.add(await (await fetch(`${importHost}/${host}/${name}?_${Date.now()}`)).text());
+        CSS.add(await (await fetch(`${env.endpoints.plugins}/${host}/${name}?_${Date.now()}`)).text());
       },
 
       unload: () => {
@@ -35,7 +36,7 @@ const loadPlugin = async (host, name) => {
       }
     }
   } else {
-    loaded[name] = await import(`${importHost}/${host}/${name}?_${Date.now()}`);
+    loaded[name] = await import(`${env.endpoints.plugins}/${host}/${name}?_${Date.now()}`);
   }
 
   loaded[name].load();

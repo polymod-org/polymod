@@ -19,6 +19,10 @@
   --accent: #6264A7;
 }
 
+.app-accents[id="www.youtube.com"] {
+  --accent: #ff0000;
+}
+
 :root {
   --background-primary: #101418;
   --background-secondary: #161A1E;
@@ -222,6 +226,7 @@ body {
 
 .item-name > :last-child span:first-child {
   font-size: 1em;
+  line-height: 1.3em;
   min-height: 2em;
   width: 100%;
   white-space: normal;

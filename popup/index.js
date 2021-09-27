@@ -3,15 +3,23 @@ const getHost = () => chrome.extension.getBackgroundPage().host;
 const hotLoadPlugin = (host, name) => chrome.extension.getBackgroundPage().sendHostMsg(getHost(), { loadPlugin: [ host, name ] })
 const hotUnloadPlugin = (name) => chrome.extension.getBackgroundPage().sendHostMsg(getHost(), { unloadPlugin: [ name ] })
 
-const hostFriendlyNames = {
-  'app.revolt.chat': 'Revolt',
-  'app.element.io': 'Element',
-  'www.guilded.gg': 'Guilded',
-  'app.slack.com': 'Slack',
-  'teams.microsoft.com': 'Teams'
+const friendlyNameFromHost = (host) => {
+  const aliases = { // Special aliases, commonly for special casing
+    'youtube': 'YouTube'
+  };
+
+  const pretty = (name) => aliases[name] || (name[0].toUpperCase() + name.substring(1).toLowerCase());
+
+  const dotSplit = host.split('.');
+  const sub = dotSplit[0];
+  const main = dotSplit[1];
+
+  if (sub !== 'www' && sub !== 'app') return pretty(sub);
+  return pretty(main);
 };
 
 let pluginsEnabled, plugins;
+let env = {};
 
 const makeSwitch = (listener, initial = false) => {
   const switchEl = document.createElement('label');
@@ -88,7 +96,7 @@ const makePluginContent = (target, themes = false) => {
 
   target.innerHTML = '';
 
-  makeOptions(target, themes ? 'Themes' : 'Plugins for ' + hostFriendlyNames[host], (themes ? plugins.themes : plugins[host]).map((x) => ([
+  makeOptions(target, themes ? 'Themes' : 'Plugins for ' + friendlyNameFromHost(host), (themes ? plugins.themes : plugins[host]).map((x) => ([
     { title: x.file.split('.').slice(0, -1).join('.'), img: x.author.picture, sub: x.author.name },
     pluginsEnabled[host + '-' + x.file],
     (value) => {
@@ -121,8 +129,10 @@ const init = async () => {
       res();
     });
   });
+
+  env = await (await fetch(chrome.runtime.getURL('env.json'))).json();
   
-  plugins = await (await fetch(`https://polyglot-mod.github.io/plugins/plugins.json?_${Date.now()}`)).json();
+  plugins = await (await fetch(`${env.endpoints.plugins}/plugins.json?_${Date.now()}`)).json();
   
   const activeTab = localStorage.getItem('activeTab') || 'plugins';
 
