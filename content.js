@@ -56,8 +56,10 @@ const loadPlugins = () => {
     loadPlugin(host, plugin.file);
   }
 
-  for (const plugin of plugins['themes'].filter((x) => pluginsEnabled[host + '-' + x.file])) {
-    loadPlugin('themes', plugin.file);
+  for (const themesHost of Object.keys(plugins).filter((x) => x.endsWith('themes'))) {
+    for (const plugin of plugins[themesHost].filter((x) => pluginsEnabled[host + '-' + x.file])) {
+      loadPlugin(themesHost, plugin.file);
+    }
   }
 
   for (const plugin of plugins['generic'].filter((x) => pluginsEnabled[host + '-' + x.file])) {

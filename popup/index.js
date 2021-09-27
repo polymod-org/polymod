@@ -89,6 +89,20 @@ const makeOptions = (target, header, items, clear = true) => {
   }
 };
 
+const makePluginOptions = (target, host, pluginsHost, header) => {
+  makeOptions(target, header, plugins[pluginsHost].map((x) => ([
+    { title: x.file.split('.').slice(0, -1).join('.'), img: x.author.picture, sub: x.author.name },
+    pluginsEnabled[host + '-' + x.file],
+    (value) => {
+      if (value) hotLoadPlugin(pluginsHost, x.file);
+        else hotUnloadPlugin(x.file);
+
+      pluginsEnabled[host + '-' + x.file] = value;
+      chrome.storage.local.set({ enabled: JSON.stringify(pluginsEnabled) });
+    }
+  ])), false);
+};
+
 const makePluginContent = (target, themes = false) => {
   const host = getHost();
   
@@ -96,29 +110,13 @@ const makePluginContent = (target, themes = false) => {
 
   target.innerHTML = '';
 
-  makeOptions(target, themes ? 'Themes' : 'Plugins for ' + friendlyNameFromHost(host), (themes ? plugins.themes : plugins[host]).map((x) => ([
-    { title: x.file.split('.').slice(0, -1).join('.'), img: x.author.picture, sub: x.author.name },
-    pluginsEnabled[host + '-' + x.file],
-    (value) => {
-      if (value) hotLoadPlugin(themes ? 'themes' : host, x.file);
-        else hotUnloadPlugin(x.file);
-
-      pluginsEnabled[host + '-' + x.file] = value;
-      chrome.storage.local.set({ enabled: JSON.stringify(pluginsEnabled) });
-    }
-  ])), false);
-
-  if (!themes) makeOptions(target, 'Cross-app Plugins', plugins['generic'].map((x) => ([
-    { title: x.file.split('.').slice(0, -1).join('.'), img: x.author.picture, sub: x.author.name },
-    pluginsEnabled[host + '-' + x.file],
-    (value) => {
-      if (value) hotLoadPlugin('generic', x.file);
-        else hotUnloadPlugin(x.file);
-
-      pluginsEnabled[host + '-' + x.file] = value;
-      chrome.storage.local.set({ enabled: JSON.stringify(pluginsEnabled) });
-    }
-  ])), false);
+  if (themes) {
+    makePluginOptions(target, host, 'discord-themes', 'Discord Themes');
+    makePluginOptions(target, host, 'vscode-themes', 'VSCode Themes');
+  } else {
+    makePluginOptions(target, host, host, 'Plugins for ' + friendlyNameFromHost(host));
+    makePluginOptions(target, host, 'generic', 'Cross-app Plugins');
+  }
 };
 
 const init = async () => {
