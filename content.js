@@ -51,15 +51,15 @@ const unloadPlugin = async (name) => {
 const loadPlugins = () => {
   const host = location.host;
 
-  for (const plugin of plugins[host].filter((x) => pluginsEnabled[host + '-' + x])) {
+  for (const plugin of plugins[host].filter((x) => pluginsEnabled[host + '-' + x.file])) {
     loadPlugin(host, plugin.file);
   }
 
-  for (const plugin of plugins['themes'].filter((x) => pluginsEnabled[host + '-' + x])) {
+  for (const plugin of plugins['themes'].filter((x) => pluginsEnabled[host + '-' + x.file])) {
     loadPlugin('themes', plugin.file);
   }
 
-  for (const plugin of plugins['generic'].filter((x) => pluginsEnabled[host + '-' + x])) {
+  for (const plugin of plugins['generic'].filter((x) => pluginsEnabled[host + '-' + x.file])) {
     loadPlugin('generic', plugin.file);
   }
 };
