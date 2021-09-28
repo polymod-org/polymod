@@ -22,21 +22,44 @@ const init = async () => {
 const loadPlugin = async (host, name) => {
   console.log('loadPlugin', host, name);
 
-  const ext = name.split('.').pop();
-  if (ext === 'css') {
-    const CSS = await import(`https://polyglot-mod.github.io/standard/src/css.js?_${Date.now()}`);
+  const ext = name.split('.').slice(1).join('.');
+
+  switch (ext) {
+    case 'css': {
+      const CSS = await import(`https://polyglot-mod.github.io/standard/src/css.js?_${Date.now()}`);
+
+      loaded[name] = {
+        load: async () => {
+          CSS.add(await (await fetch(`${env.endpoints.plugins}/${host}/${name}?_${Date.now()}`)).text());
+        },
+  
+        unload: () => {
+          CSS.remove();
+        }
+      };
+
+      break;
+    }
+
+    default: {
+      loaded[name] = await import(`${env.endpoints.plugins}/${host}/${name}?_${Date.now()}`);
+      break;
+    }
+  }
+
+  if (loaded[name].vscode) { // VSCode Theme embedded
+    const theme = loaded[name].vscode;
+    const VSCode = await import(`https://polyglot-mod.github.io/standard/src/theme-compat/vscode.js?_${Date.now()}`);
 
     loaded[name] = {
       load: async () => {
-        CSS.add(await (await fetch(`${env.endpoints.plugins}/${host}/${name}?_${Date.now()}`)).text());
+        VSCode.add(theme);
       },
-
+  
       unload: () => {
-        CSS.remove();
+        VSCode.remove();
       }
-    }
-  } else {
-    loaded[name] = await import(`${env.endpoints.plugins}/${host}/${name}?_${Date.now()}`);
+    };
   }
 
   loaded[name].load();
