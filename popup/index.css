@@ -65,6 +65,8 @@ body {
   width: 250px;
   height: 400px;
 
+  position: relative;
+
   background-color: var(--background-primary);
 }
 
