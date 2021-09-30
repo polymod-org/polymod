@@ -31,12 +31,16 @@ const cspAllowAll = [
 const ports = {};
 
 window.sendHostMsg = (host, msg) => {
-  ports[host].postMessage(msg);
+  for (const port of ports[host]) {
+    port.postMessage(msg);
+  }
 };
 
 chrome.runtime.onConnect.addListener((port) => {
   const host = new URL(port.sender.tab.url).host;
-  ports[host] = port;
+  
+  if (!ports[host]) ports[host] = [];
+  ports[host].push(port);
 
   port.onMessage.addListener((msg) => {
     if (msg.active) window.host = host;
