@@ -94,11 +94,11 @@ const makePluginOptions = (target, host, pluginsHost, header) => {
     { title: x.file.split('.').slice(0, -1).join('.'), img: x.author.picture, sub: x.author.name },
     pluginsEnabled[host + '-' + x.file],
     (value) => {
-      if (value) hotLoadPlugin(pluginsHost, x.file);
-        else hotUnloadPlugin(x.file);
-
       pluginsEnabled[host + '-' + x.file] = value;
       chrome.storage.local.set({ enabled: JSON.stringify(pluginsEnabled) });
+
+      if (value) hotLoadPlugin(pluginsHost, x.file);
+        else hotUnloadPlugin(x.file);
     }
   ])), false);
 };
