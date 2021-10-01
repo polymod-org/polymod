@@ -317,3 +317,7 @@ body {
 .app-accents[id="www.google.com"] {
   --accent: #1a73e8;
 }
+
+.app-accents[id="github.com"] {
+  --accent: #1f6feb;
+}
