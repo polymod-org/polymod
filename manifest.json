@@ -2,7 +2,7 @@
     "name": "Polyglot",
     "description": "A new cross-site mod for various chat apps.",
 
-    "version": "0.5.0",
+    "version": "0.6.0",
 
     "author": "Polyteam",
     "homepage_url": "https://github.com/polyglot-mod/polyglot",
@@ -48,7 +48,8 @@
     ],
 
     "web_accessible_resources": [
-        "env.json"
+        "env.json",
+        "lib/getPlugins.js"
     ],
 
     "manifest_version": 2

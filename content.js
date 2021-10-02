@@ -1,8 +1,6 @@
 let plugins, pluginsEnabled;
 let loaded = {};
 
-let env = {};
-
 const init = async () => {
   await new Promise((res) => {
     chrome.storage.local.get(null, (data) => {
@@ -12,25 +10,23 @@ const init = async () => {
     });
   });
 
-  env = await (await fetch(chrome.runtime.getURL('env.json'))).json();
+  plugins = await (await import(chrome.runtime.getURL('lib/getPlugins.js'))).default();
 
-  plugins = await (await fetch(`${env.endpoints.plugins}/plugins.json?_${Date.now()}`)).json();
-  
-  setTimeout(loadPlugins, 3000);
+  setTimeout(loadPlugins, 2000);
 };
 
-const loadPlugin = async (host, name) => {
-  console.log('loadPlugin', host, name);
+const loadPlugin = async (host, { file, source }) => {
+  console.log('loadPlugin', host, file);
 
-  const ext = name.split('.').slice(1).join('.');
+  const ext = file.split('.').slice(1).join('.');
 
   switch (ext) {
     case 'css': {
       const CSS = await import(`https://polyglot-mod.github.io/standard/src/css.js?_${Date.now()}`);
 
-      loaded[name] = {
+      loaded[file] = {
         load: async () => {
-          CSS.add(await (await fetch(`${env.endpoints.plugins}/${host}/${name}?_${Date.now()}`)).text());
+          CSS.add(await (await fetch(`${source}/${host}/${file}?_${Date.now()}`)).text());
         },
   
         unload: () => {
@@ -42,16 +38,16 @@ const loadPlugin = async (host, name) => {
     }
 
     default: {
-      loaded[name] = await import(`${env.endpoints.plugins}/${host}/${name}?_${Date.now()}`);
+      loaded[file] = await import(`${source}/${host}/${file}?_${Date.now()}`);
       break;
     }
   }
 
-  if (loaded[name].vscode) { // VSCode Theme embedded
-    const theme = loaded[name].vscode;
+  if (loaded[file].vscode) { // VSCode Theme embedded
+    const theme = loaded[file].vscode;
     const VSCode = await import(`https://polyglot-mod.github.io/standard/src/theme-compat/vscode.js?_${Date.now()}`);
 
-    loaded[name] = {
+    loaded[file] = {
       load: async () => {
         VSCode.add(theme);
       },
@@ -62,7 +58,7 @@ const loadPlugin = async (host, name) => {
     };
   }
 
-  loaded[name].load();
+  loaded[file].load();
 };
 
 const unloadPlugin = async (name) => {
@@ -76,17 +72,17 @@ const loadPlugins = () => {
   const host = location.host;
 
   for (const plugin of plugins[host].filter((x) => pluginsEnabled[host + '-' + x.file])) {
-    loadPlugin(host, plugin.file);
+    loadPlugin(host, plugin);
   }
 
   for (const themesHost of Object.keys(plugins).filter((x) => x.endsWith('themes'))) {
     for (const plugin of plugins[themesHost].filter((x) => pluginsEnabled[host + '-' + x.file])) {
-      loadPlugin(themesHost, plugin.file);
+      loadPlugin(themesHost, plugin);
     }
   }
 
   for (const plugin of plugins['generic'].filter((x) => pluginsEnabled[host + '-' + x.file])) {
-    loadPlugin('generic', plugin.file);
+    loadPlugin('generic', plugin);
   }
 };
 

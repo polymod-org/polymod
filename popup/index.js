@@ -1,6 +1,6 @@
 const getHost = () => chrome.extension.getBackgroundPage().host;
 
-const hotLoadPlugin = (host, name) => chrome.extension.getBackgroundPage().sendHostMsg(getHost(), { loadPlugin: [ host, name ] })
+const hotLoadPlugin = (host, plugin) => chrome.extension.getBackgroundPage().sendHostMsg(getHost(), { loadPlugin: [ host, plugin ] })
 const hotUnloadPlugin = (name) => chrome.extension.getBackgroundPage().sendHostMsg(getHost(), { unloadPlugin: [ name ] })
 
 const friendlyNameFromHost = (host) => {
@@ -19,7 +19,7 @@ const friendlyNameFromHost = (host) => {
 };
 
 let pluginsEnabled, plugins;
-let env = {};
+
 
 const makeSwitch = (listener, initial = false) => {
   const switchEl = document.createElement('label');
@@ -97,7 +97,7 @@ const makePluginOptions = (target, host, pluginsHost, header) => {
       pluginsEnabled[host + '-' + x.file] = value;
       chrome.storage.local.set({ enabled: JSON.stringify(pluginsEnabled) });
 
-      if (value) hotLoadPlugin(pluginsHost, x.file);
+      if (value) hotLoadPlugin(pluginsHost, x);
         else hotUnloadPlugin(x.file);
     }
   ])), false);
@@ -128,9 +128,7 @@ const init = async () => {
     });
   });
 
-  env = await (await fetch(chrome.runtime.getURL('env.json'))).json();
-  
-  plugins = await (await fetch(`${env.endpoints.plugins}/plugins.json?_${Date.now()}`)).json();
+  plugins = await (await import(chrome.runtime.getURL('lib/getPlugins.js'))).default();
   
   const activeTab = localStorage.getItem('activeTab') || 'plugins';
 
