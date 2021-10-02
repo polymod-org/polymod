@@ -15,7 +15,7 @@ const init = async () => {
   setTimeout(loadPlugins, 2000);
 };
 
-const loadPlugin = async (host, { file, source }) => {
+const loadPlugin = async ({ file, host, source }) => {
   console.log('loadPlugin', host, file);
 
   const ext = file.split('.').slice(1).join('.');
@@ -72,17 +72,17 @@ const loadPlugins = () => {
   const host = location.host;
 
   for (const plugin of plugins[host].filter((x) => pluginsEnabled[host + '-' + x.file])) {
-    loadPlugin(host, plugin);
+    loadPlugin(plugin);
   }
 
   for (const themesHost of Object.keys(plugins).filter((x) => x.endsWith('themes'))) {
     for (const plugin of plugins[themesHost].filter((x) => pluginsEnabled[host + '-' + x.file])) {
-      loadPlugin(themesHost, plugin);
+      loadPlugin(plugin);
     }
   }
 
   for (const plugin of plugins['generic'].filter((x) => pluginsEnabled[host + '-' + x.file])) {
-    loadPlugin('generic', plugin);
+    loadPlugin(plugin);
   }
 };
 

@@ -31,7 +31,7 @@ const cspAllowAll = [
 const ports = {};
 
 window.sendHostMsg = (host, msg) => {
-  for (const port of ports[host]) {
+  for (const port of (ports[host] || [])) {
     try {
       port.postMessage(msg);
     } catch (e) {

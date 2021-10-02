@@ -1,7 +1,7 @@
 const getHost = () => chrome.extension.getBackgroundPage().host;
 
-const hotLoadPlugin = (host, plugin) => chrome.extension.getBackgroundPage().sendHostMsg(getHost(), { loadPlugin: [ host, plugin ] })
-const hotUnloadPlugin = (name) => chrome.extension.getBackgroundPage().sendHostMsg(getHost(), { unloadPlugin: [ name ] })
+const hotLoadPlugin = (plugin, host = getHost()) => chrome.extension.getBackgroundPage().sendHostMsg(host, { loadPlugin: [ plugin ] })
+const hotUnloadPlugin = (name, host = getHost()) => chrome.extension.getBackgroundPage().sendHostMsg(host, { unloadPlugin: [ name ] })
 
 const friendlyNameFromHost = (host) => {
   const aliases = { // Special aliases, commonly for special casing
@@ -95,10 +95,22 @@ const makePluginOptions = (target, host, pluginsHost, header) => {
     pluginsEnabled[host + '-' + x.file],
     (value) => {
       pluginsEnabled[host + '-' + x.file] = value;
-      chrome.storage.local.set({ enabled: JSON.stringify(pluginsEnabled) });
 
-      if (value) hotLoadPlugin(pluginsHost, x);
-        else hotUnloadPlugin(x.file);
+      if (localStorage.getItem('Sync Theming') === 'true') {
+        for (const hostSync in plugins) {
+          if (plugins.hasOwnProperty(hostSync)) {
+            pluginsEnabled[hostSync + '-' + x.file] = value;
+
+            if (value) hotLoadPlugin(x, hostSync);
+              else hotUnloadPlugin(x.file, hostSync)
+          }
+        }
+      } else {
+        if (value) hotLoadPlugin(x);
+          else hotUnloadPlugin(x.file);
+      }
+
+      chrome.storage.local.set({ enabled: JSON.stringify(pluginsEnabled) });
     }
   ])), false);
 };
@@ -200,7 +212,8 @@ const openSettings = () => {
   target.innerHTML = '';
 
   const settingDescriptions = {
-    'Disable App Accents': 'Disables app-specific theming of polyglot\'s UI'
+    'Disable App Accents': 'Disables app-specific theming of polyglot\'s UI',
+    'Sync Theming': 'Use same themes across all apps (resets themes)'
   };
 
   makeOptions(target, 'UI', ['Disable App Accents'].map((x) => ([
@@ -208,6 +221,26 @@ const openSettings = () => {
     localStorage.getItem(x) === 'true',
     (value) => {
       localStorage.setItem(x, value);
+
+      setTimeout(() => { location.reload() }, 300);
+    }
+  ])), false);
+
+  makeOptions(target, 'Plugins', ['Sync Theming'].map((x) => ([
+    { title: x, sub: settingDescriptions[x] },
+    localStorage.getItem(x) === 'true',
+    (value) => {
+      localStorage.setItem(x, value);
+
+      if (x === 'Sync Theming' && value) {
+        for (const themesHost of Object.keys(plugins).filter((x) => x.endsWith('themes'))) {
+          for (const plugin of plugins[themesHost]) {
+            Object.keys(pluginsEnabled).filter((x) => x.endsWith('-' + plugin.file)).forEach((x) => { delete pluginsEnabled[x]; });
+          }
+        }
+
+        chrome.storage.local.set({ enabled: JSON.stringify(pluginsEnabled) });
+      }
 
       setTimeout(() => { location.reload() }, 300);
     }
