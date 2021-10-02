@@ -96,7 +96,7 @@ const makePluginOptions = (target, host, pluginsHost, header) => {
     (value) => {
       pluginsEnabled[host + '-' + x.file] = value;
 
-      if (localStorage.getItem('Sync Theming') === 'true') {
+      if (localStorage.getItem('Sync Themes') === 'true') {
         for (const hostSync in plugins) {
           if (plugins.hasOwnProperty(hostSync)) {
             pluginsEnabled[hostSync + '-' + x.file] = value;
@@ -213,7 +213,7 @@ const openSettings = () => {
 
   const settingDescriptions = {
     'Disable App Accents': 'Disables app-specific theming of polyglot\'s UI',
-    'Sync Theming': 'Use same themes across all apps (resets themes)'
+    'Sync Themes': 'Use same themes across all apps (resets themes)'
   };
 
   makeOptions(target, 'UI', ['Disable App Accents'].map((x) => ([
@@ -226,13 +226,13 @@ const openSettings = () => {
     }
   ])), false);
 
-  makeOptions(target, 'Plugins', ['Sync Theming'].map((x) => ([
+  makeOptions(target, 'Plugins', ['Sync Themes'].map((x) => ([
     { title: x, sub: settingDescriptions[x] },
     localStorage.getItem(x) === 'true',
     (value) => {
       localStorage.setItem(x, value);
 
-      if (x === 'Sync Theming' && value) {
+      if (x === 'Sync Themes' && value) {
         for (const themesHost of Object.keys(plugins).filter((x) => x.endsWith('themes'))) {
           for (const plugin of plugins[themesHost]) {
             Object.keys(pluginsEnabled).filter((x) => x.endsWith('-' + plugin.file)).forEach((x) => { delete pluginsEnabled[x]; });
