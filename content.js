@@ -22,7 +22,7 @@ const loadPlugin = async ({ file, host, source }) => {
 
   switch (ext) {
     case 'css': {
-      const CSS = await import(`https://standard.polymod.dev/src/css.js?_${Date.now()}`);
+      const CSS = await import(`https://standard.polymod.dev/css.js?_${Date.now()}`);
 
       loaded[file] = {
         load: async () => {
@@ -45,7 +45,7 @@ const loadPlugin = async ({ file, host, source }) => {
 
   if (loaded[file].vscode) { // VSCode Theme embedded
     const theme = loaded[file].vscode;
-    const VSCode = await import(`https://standard.polymod.dev/src/theme-compat/vscode.js?_${Date.now()}`);
+    const VSCode = await import(`https://standard.polymod.dev/theme-compat/vscode.js?_${Date.now()}`);
 
     loaded[file] = {
       load: async () => {
