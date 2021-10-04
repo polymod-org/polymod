@@ -39,6 +39,9 @@ const loadPlugin = async ({ file, host, source }) => {
 
     default: {
       loaded[file] = await import(`${source}/${host}/${file}?_${Date.now()}`);
+
+      if (!loaded[file].load && loaded[file].default) loaded[file] = loaded[file].default; // If default is exported use that if no load / other funcs, use exported default object (plugin generators)
+
       break;
     }
   }
