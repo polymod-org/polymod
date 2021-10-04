@@ -5,7 +5,8 @@ const hotUnloadPlugin = (name, host = getHost()) => chrome.extension.getBackgrou
 
 const friendlyNameFromHost = (host) => {
   const aliases = { // Special aliases, commonly for special casing
-    'youtube': 'YouTube'
+    'youtube': 'YouTube',
+    'duckduckgo': 'DuckDuckGo'
   };
 
   const pretty = (name) => aliases[name] || (name[0].toUpperCase() + name.substring(1).toLowerCase());

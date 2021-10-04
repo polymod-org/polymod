@@ -321,3 +321,7 @@ body {
 .app-accents[id="github.com"] {
   --accent: #909498;
 }
+
+.app-accents[id="duckduckgo.com"] {
+  --accent: #DE5833;
+}
