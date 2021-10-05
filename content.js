@@ -22,15 +22,19 @@ const loadPlugin = async ({ file, host, source }) => {
 
   switch (ext) {
     case 'css': {
-      const CSS = await import(`https://standard.polymod.dev/css.js`);
+      let el;
 
       loaded[file] = {
         load: async () => {
-          CSS.add(await (await fetch(`${source}/${host}/${file}?_${Date.now()}`)).text());
+          el = document.createElement('style');
+
+          el.appendChild(document.createTextNode(await (await fetch(`${source}/${host}/${file}?_${Date.now()}`)).text()));
+        
+          document.body.appendChild(el);
         },
   
         unload: () => {
-          CSS.remove();
+          if (el) el.remove();
         }
       };
 
