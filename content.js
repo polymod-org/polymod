@@ -1,3 +1,15 @@
+const pureCSS = (css) => {
+  const el = document.createElement('style');
+
+  el.appendChild(document.createTextNode(css));
+
+  document.body.appendChild(el);
+
+  return el;
+};
+
+let cssCacheText = '';
+
 let plugins, pluginsEnabled;
 let loaded = {};
 
@@ -5,6 +17,7 @@ const init = async () => {
   await new Promise((res) => {
     chrome.storage.local.get(null, (data) => {
       pluginsEnabled = JSON.parse(data.enabled || '{}');
+      pureCSS(data['cssCache_' + location.host] || '');
 
       res();
     });
@@ -22,19 +35,21 @@ const loadPlugin = async ({ file, host, source }) => {
 
   switch (ext) {
     case 'css': {
-      let el;
+      let el, css;
 
       loaded[file] = {
         load: async () => {
-          el = document.createElement('style');
+          css = await (await fetch(`${source}/${host}/${file}?_${Date.now()}`)).text();
 
-          el.appendChild(document.createTextNode(await (await fetch(`${source}/${host}/${file}?_${Date.now()}`)).text()));
-        
-          document.body.appendChild(el);
+          el = pureCSS(css);
+
+          loaded[file].cssCache.add(css);
         },
   
         unload: () => {
           if (el) el.remove();
+
+          loaded[file].cssCache.remove(css);
         }
       };
 
@@ -63,6 +78,27 @@ const loadPlugin = async ({ file, host, source }) => {
         VSCode.remove();
       }
     };
+  }
+
+  const saveCssCache = () => {
+    const obj = {};
+    obj['cssCache_' + location.host] = cssCacheText;
+
+    chrome.storage.local.set(obj);
+  };
+
+  loaded[file].cssCache = {
+    add: async (css) => {
+      cssCacheText += css;
+
+      saveCssCache();
+    },
+
+    remove: async (css) => {
+      cssCacheText = cssCacheText.replace(css, '');
+
+      saveCssCache();
+    }
   }
 
   loaded[file].load();
