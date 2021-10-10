@@ -325,3 +325,7 @@ body {
 .app-accents[id="duckduckgo.com"] {
   --accent: #DE5833;
 }
+
+.app-accents[id="open.spotify.com"] {
+  --accent: #1db954;
+}

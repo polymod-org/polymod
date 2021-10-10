@@ -15,7 +15,7 @@ const friendlyNameFromHost = (host) => {
   const sub = dotSplit[0];
   const main = dotSplit[1];
 
-  if (sub !== 'www' && sub !== 'app') return pretty(sub);
+  if (sub !== 'www' && sub !== 'app' && sub !== 'open') return pretty(sub);
   return pretty(main);
 };
 
