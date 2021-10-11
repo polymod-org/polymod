@@ -2,7 +2,8 @@
     "name": "Polymod",
     "description": "A universal mod to theme and enhance the sites you love",
 
-    "version": "0.7.0",
+    "version": "1.0.0",
+    "version_name" : "1.0 dev",
 
     "author": "Polyteam",
     "homepage_url": "https://polymod.dev",
