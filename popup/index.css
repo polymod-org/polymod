@@ -151,6 +151,10 @@ body {
   border-bottom: 3px solid var(--background-tertiary);
 }
 
+.item:last-of-type {
+  border-bottom: none;
+}
+
 .item-name {
   width: 80%;
   height: 100%;
@@ -228,6 +232,8 @@ body {
   height: 1em;
   width: 2em;
   background-color: var(--background-tertiary);
+
+  cursor: pointer;
 }
 
 .switch div {
@@ -245,9 +251,9 @@ body {
   transform: translate3d(calc(100% + 3px), 0, 0);
 }
 
-.plugin-button {
-  width: 26px;
-  height: 26px;
+.plugin-button, .navbar button {
+  width: 28px;
+  height: 28px;
   border-radius: .2rem;
   display: flex;
   align-items: center;
@@ -257,9 +263,11 @@ body {
   
   transition: border .4s, background-color .4s;
 
-  padding: 1px;
+  padding: 0px;
 
   cursor: pointer;
+
+  overflow: hidden;
 }
 
 .plugin-button:hover {
@@ -284,6 +292,87 @@ body {
 
 .plugin-button svg {
   filter: drop-shadow(0 0.1em 0.3em rgba(0, 0, 0, 0.4));
+}
+
+.navbar {
+  height: 30px;
+  width: calc(100% - 24px);
+
+  margin: 6px 12px;
+
+  display: flex;
+  align-items: center;
+}
+
+.navbar input {
+  height: 28px;
+  width: 70%;
+
+  flex-grow: 1;
+  
+  margin-right: 8px;
+
+  background-color: var(--background-secondary);
+
+  border-radius: .2rem;
+
+  outline: none !important;
+
+  border: 2px solid var(--background-tertiary);
+
+  padding: 2px 6px;
+}
+
+.navbar input:focus {
+  border-color: #505458;
+}
+
+.navbar button {
+  fill: white;
+
+  background-color: var(--background-secondary);
+  border: 2px solid var(--background-tertiary);
+
+  margin-left: 8px;
+}
+
+.navbar button:hover, .navbar button.active {
+  background-color: var(--background-tertiary);
+  border-color: var(--background-secondary);
+
+  outline: none;
+}
+
+#filter-button {
+  padding: 3px;
+}
+
+.popout {
+  position: absolute;
+
+  z-index: 10;
+
+  padding: 4px 6px;
+
+  width: 180px;
+
+  background-color: var(--background-secondary);
+  border-color: var(--background-tertiary);
+
+  display: flex;
+  flex-direction: column;
+
+  border-radius: .2rem;
+}
+
+.popout .item {
+  position: relative;
+
+  height: 40px;
+}
+
+.popout .switch {
+  width: 40px;
 }
 
 
