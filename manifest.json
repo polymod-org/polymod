@@ -35,8 +35,6 @@
 
     "permissions": [
         "storage",
-        "webRequest",
-        "webRequestBlocking",
         "*://app.element.io/*",
         "*://app.revolt.chat/*",
         "*://www.guilded.gg/*",
