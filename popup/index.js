@@ -58,11 +58,15 @@ const makeOptions = (target, header, items, clear = true) => {
   hostEl.textContent = header;
   
   target.appendChild(hostEl);
-  
+
   for (const item of items) {
     const el = document.createElement('div');
     el.className = 'item';
     
+    if (item === items[items.length - 1]) {
+      el.style.borderBottom = 'none';
+    }
+
     const nameEl = document.createElement('div');
     nameEl.className = 'item-name';
 
