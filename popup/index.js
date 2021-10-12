@@ -87,7 +87,7 @@ const makePopout = (items) => {
   return el;
 };
 
-const handleFiltering = (search = localStorage.getItem('Search'), installedOnly = (localStorage.getItem('Installed Only') === 'true')) => {
+const handleFiltering = (search = (localStorage.getItem('Search') || ''), installedOnly = (localStorage.getItem('Installed Only') === 'true')) => {
   const fuzzyReg = new RegExp(`.*${search}.*`, 'i');
 
   for (const el of document.querySelectorAll('.content .item')) {
@@ -109,7 +109,7 @@ const makeNavbar = () => {
   const searchEl = document.createElement('input');
   searchEl.type = 'text';
   searchEl.placeholder = 'Search';
-  searchEl.value = localStorage.getItem('Search');
+  searchEl.value = localStorage.getItem('Search') || '';
 
   searchEl.oninput = () => {
     handleFiltering(searchEl.value, undefined);
