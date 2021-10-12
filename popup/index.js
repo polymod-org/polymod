@@ -233,7 +233,26 @@ const makeOptions = (target, header, items, clear = true) => {
     nameEl.append(nameTitleEl, nameSubEl);
     
     el.appendChild(nameEl);
-    
+
+    if (item[0].dropdown) {
+      const dropdownEl = document.createElement('select');
+
+      dropdownEl.oninput = () => {
+        item[0].dropdownHandler(dropdownEl.value);
+      };
+
+      for (const option of item[0].dropdown) {
+        const optionEl = document.createElement('option');
+
+        optionEl.textContent = option;
+        optionEl.value = option;
+
+        dropdownEl.appendChild(optionEl);
+      }
+
+      el.appendChild(dropdownEl);
+    }
+
     const switchEl = makeSwitch(item[2], item[1]);
     
     el.appendChild(switchEl);
@@ -242,30 +261,89 @@ const makeOptions = (target, header, items, clear = true) => {
   }
 };
 
-const makePluginOptions = (target, host, pluginsHost, header) => {
-  makeOptions(target, header, plugins[pluginsHost].map((x) => ([
-    { title: x.file.split('.').slice(0, -1).join('.'), img: x.author.picture, sub: x.author.name },
-    pluginsEnabled[host + '-' + x.file],
-    (value) => {
-      pluginsEnabled[host + '-' + x.file] = value;
+const managePlugin = (host, plugin, pluginsHost, value) => {
+  pluginsEnabled[host + '-' + plugin.file] = value;
+  
+  if (pluginsHost.endsWith('-themes') && localStorage.getItem('Sync Themes') === 'true') {
+    for (const hostSync in plugins) {
+      if (plugins.hasOwnProperty(hostSync)) {
+        pluginsEnabled[hostSync + '-' + plugin.file] = value;
 
-      if (localStorage.getItem('Sync Themes') === 'true') {
-        for (const hostSync in plugins) {
-          if (plugins.hasOwnProperty(hostSync)) {
-            pluginsEnabled[hostSync + '-' + x.file] = value;
-
-            if (value) hotLoadPlugin(x, hostSync);
-              else hotUnloadPlugin(x.file, hostSync)
-          }
-        }
-      } else {
-        if (value) hotLoadPlugin(x);
-          else hotUnloadPlugin(x.file);
+        if (value) hotLoadPlugin(plugin, hostSync);
+          else hotUnloadPlugin(plugin.file, hostSync);
       }
-
-      chrome.storage.local.set({ enabled: JSON.stringify(pluginsEnabled) });
     }
-  ])), false);
+  } else {
+    if (value) hotLoadPlugin(plugin);
+      else hotUnloadPlugin(plugin.file);
+  }
+
+  chrome.storage.local.set({ enabled: JSON.stringify(pluginsEnabled) });
+};
+
+const makePluginOptions = (target, host, pluginsHost, header) => {
+  const hostPlugins = [];
+
+  for (const plugin of plugins[pluginsHost]) {
+    if (!plugin.under) {
+      hostPlugins.push([
+        {
+          title: plugin.file.split('.').slice(0, -1).join('.'),
+      
+          img: plugin.author.picture,
+          sub: plugin.author.name
+        },
+
+        pluginsEnabled[host + '-' + plugin.file],
+
+        (value) => {
+          managePlugin(host, plugin, pluginsHost, value);
+        }
+      ]);
+
+      continue;
+    }
+
+    const parentPlugin = hostPlugins.find((x) => x[0].title === plugin.under);
+    if (parentPlugin) continue;
+
+    const fellowPlugins = plugins[pluginsHost].filter((x) => x.under === plugin.under);
+
+    let selectedPlugin = fellowPlugins.find((x) => pluginsEnabled[host + '-' + x.file]) || fellowPlugins[0];
+
+    hostPlugins.push([
+      {
+        title: plugin.under,
+
+        img: plugin.author.picture,
+        sub: plugin.author.name,
+
+        dropdown: [selectedPlugin, ...fellowPlugins.filter((x) => x !== selectedPlugin)].map((x) => x.under_as),
+        dropdownHandler: (val) => {
+          const oldPlugin = selectedPlugin;
+
+          selectedPlugin = fellowPlugins.find((x) => x.under_as === val);
+
+          console.log(selectedPlugin);
+
+          if (!pluginsEnabled[host + '-' + oldPlugin.file]) return; // Disabled
+
+          managePlugin(host, oldPlugin, pluginsHost, false);
+
+          managePlugin(host, selectedPlugin, pluginsHost, true);
+        }
+      },
+
+      pluginsEnabled[host + '-' + selectedPlugin.file],
+
+      (value) => {
+        console.log(selectedPlugin);
+        managePlugin(host, selectedPlugin, pluginsHost, value);
+      }
+    ]);
+  }
+
+  makeOptions(target, header, hostPlugins, false);
 };
 
 const makePluginContent = (target, themes = false) => {

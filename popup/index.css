@@ -37,7 +37,7 @@ html, body {
 }
 
 body {
-  width: 250px;
+  width: 260px;
   height: 400px;
 
   position: relative;
@@ -136,7 +136,7 @@ body {
 
 .item {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
   
   height: 60px;
@@ -156,7 +156,6 @@ body {
 }
 
 .item-name {
-  width: 80%;
   height: 100%;
   
   margin-right: 5px;
@@ -184,6 +183,20 @@ body {
 .item-name > :first-child {
   font-size: 1.2em;
   font-weight: 500;
+}
+
+.item select {
+  width: 80px;
+  background: var(--background-secondary);
+  padding: 4px;
+
+  font-size: 1em;
+
+  font-weight: 500;
+
+  margin-right: 4px;
+
+  border-radius: .2rem;
 }
 
 .item-name > :last-child {
