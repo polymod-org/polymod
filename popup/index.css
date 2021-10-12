@@ -389,16 +389,16 @@ body {
   color: var(--background-primary);
 
   font-weight: 600;
-  font-size: 2.4em;
+  font-size: 2em;
 
-  padding: 1.2rem 0px;
+  padding: 1rem 0px;
 }
 
 .no-host div:last-child {
-  padding: 16px;
+  padding: 18px;
 
   font-weight: 500;
-  font-size: 1.6em;
+  font-size: 1.4em;
 }
 
 
