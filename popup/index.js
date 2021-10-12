@@ -271,7 +271,26 @@ const makePluginOptions = (target, host, pluginsHost, header) => {
 const makePluginContent = (target, themes = false) => {
   const host = getHost();
   
-  if (!plugins[host]) return;
+  if (!plugins[host]) {
+    document.body.innerHTML = '';
+
+    const noHostEl = document.createElement('div');
+    noHostEl.className = 'no-host';
+
+    const bannerEl = document.createElement('div');
+
+    const subTextEl = document.createElement('div');
+
+    bannerEl.textContent = 'No Host Found';
+    subTextEl.textContent = 'Try refreshing, or going to a supported app';
+
+    noHostEl.appendChild(bannerEl);
+    noHostEl.appendChild(subTextEl);
+
+    document.body.appendChild(noHostEl);
+
+    return;
+  }
 
   target.innerHTML = '';
 

@@ -375,6 +375,29 @@ body {
   width: 40px;
 }
 
+.no-host {
+  display: flex;
+  flex-direction: column;
+  
+  width: 100%;
+}
+
+.no-host div:first-child {
+  background: #FD6671;
+  color: var(--background-primary);
+
+  font-weight: 600;
+  font-size: 24px;
+
+  padding: 24px;
+}
+
+.no-host div:last-child {
+  padding: 12px;
+
+  font-weight: 500;
+}
+
 
 /* App specific accents */
 .app-accents[id="app.revolt.chat"] {
