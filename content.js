@@ -9,6 +9,7 @@ const pureCSS = (css) => {
 };
 
 let cssCacheText = '';
+let cssCacheEl;
 
 let plugins, pluginsEnabled;
 let loaded = {};
@@ -17,7 +18,7 @@ const init = async () => {
   await new Promise((res) => {
     chrome.storage.local.get(null, (data) => {
       pluginsEnabled = JSON.parse(data.enabled || '{}');
-      pureCSS(data['cssCache_' + location.host] || '');
+      cssCacheEl = pureCSS(data['cssCache_' + location.host] || '');
 
       res();
     });
@@ -25,7 +26,11 @@ const init = async () => {
 
   plugins = await (await import(chrome.runtime.getURL('lib/getPlugins.js'))).default();
 
-  setTimeout(loadPlugins, 2000);
+  setTimeout(() => {
+    loadPlugins();
+
+    setTimeout(() => cssCacheEl.remove(), 10000);
+  }, 2000);
 };
 
 const loadPlugin = async ({ file, host, source }) => {
