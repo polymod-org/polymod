@@ -380,6 +380,8 @@ body {
   flex-direction: column;
   
   width: 100%;
+
+  text-align: center;
 }
 
 .no-host div:first-child {
@@ -387,15 +389,16 @@ body {
   color: var(--background-primary);
 
   font-weight: 600;
-  font-size: 24px;
+  font-size: 2.4em;
 
-  padding: 24px;
+  padding: 1.2rem 0px;
 }
 
 .no-host div:last-child {
-  padding: 12px;
+  padding: 16px;
 
   font-weight: 500;
+  font-size: 1.6em;
 }
 
 
