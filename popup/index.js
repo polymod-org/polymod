@@ -377,6 +377,7 @@ const makePluginContent = (target, themes = false) => {
   if (themes) {
     makePluginOptions(target, host, 'discord-themes', 'Discord Themes');
     makePluginOptions(target, host, 'vscode-themes', 'VSCode Themes');
+    makePluginOptions(target, host, 'spicetify-themes', 'Spicetify Themes');
   } else {
     makePluginOptions(target, host, host, 'Plugins for ' + friendlyNameFromHost(host));
     makePluginOptions(target, host, 'generic', 'Cross-app Plugins');

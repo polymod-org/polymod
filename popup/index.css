@@ -157,6 +157,7 @@ body {
 
 .item-name {
   height: 100%;
+  flex-grow: 1;
   
   margin-right: 5px;
 
@@ -194,7 +195,7 @@ body {
 
   font-weight: 500;
 
-  margin-right: 4px;
+  margin-right: 16px;
 
   border-radius: .2rem;
 }

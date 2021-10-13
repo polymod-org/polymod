@@ -92,6 +92,47 @@ const loadPlugin = async ({ file, host, source }) => {
     };
   }
 
+  if (loaded[file].spicetify) {
+    const theme = loaded[file].spicetify;
+
+    Object.keys(theme).forEach((x) => theme[x] = '#' + theme[x]); // Add # before hex colors
+
+    const css = `.theme-dark, .theme-light {
+      --background-primary: ${theme['main']};
+      --background-secondary: ${theme['sidebar']};
+      --background-secondary-alt: ${theme['card']};
+      --background-floating: ${theme['card']};
+      --background-tertiary: ${theme['player']};
+      --background-accent: ${theme['tab-active']}; 
+
+      --interactive-hover: ${theme['text']};
+      --interactive-normal: ${theme['button']};
+      --interactive-muted: ${theme['button-disabled']};
+
+      --text-normal: ${theme['text']};
+      --text-muted: ${theme['subtext']};
+      --text-link: ${theme['button-active']};
+
+      --brand-experiment: ${theme['button-active']};
+    }`;
+
+    let el;
+
+    loaded[file] = {
+      load: async () => {
+        el = pureCSS(css);
+
+        loaded[file].cssCache.add(css);
+      },
+
+      unload: () => {
+        if (el) el.remove();
+
+        loaded[file].cssCache.remove(css);
+      }
+    };
+  }
+
   const saveCssCache = () => {
     const obj = {};
     obj['cssCache_' + location.host] = cssCacheText;
