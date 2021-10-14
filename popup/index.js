@@ -234,7 +234,7 @@ const makeOptions = (target, header, items, clear = true) => {
     
     el.appendChild(nameEl);
 
-    if (item[0].dropdown) {
+    if (item[0].dropdown && item[0].dropdown.length > 1) {
       const dropdownEl = document.createElement('select');
 
       dropdownEl.oninput = () => {
