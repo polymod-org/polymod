@@ -28,7 +28,7 @@
 
     "content_scripts": [
         {
-            "matches": ["*://app.element.io/*", "*://app.revolt.chat/*", "*://www.guilded.gg/*", "*://app.slack.com/*", "*://teams.microsoft.com/*", "*://www.youtube.com/*", "*://www.google.com/*", "*://github.com/*", "*://duckduckgo.com/*", "*://open.spotify.com/*"],
+            "matches": ["*://app.element.io/*", "*://app.revolt.chat/*", "*://www.guilded.gg/*", "*://app.slack.com/*", "*://teams.microsoft.com/*", "*://www.youtube.com/*", "*://www.google.com/*", "*://github.com/*", "*://duckduckgo.com/*", "*://open.spotify.com/*", "*://en.wikipedia.org/*"],
             "all_frames": true,
             "js": ["content.js"]
         }
@@ -45,7 +45,8 @@
         "*://www.google.com/*",
         "*://github.com/*",
         "*://duckduckgo.com/*",
-        "*://open.spotify.com/*"
+        "*://open.spotify.com/*",
+        "*://en.wikipedia.org/*"
     ],
 
     "web_accessible_resources": [
