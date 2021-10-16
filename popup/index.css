@@ -462,3 +462,7 @@ body {
 .app-accents[id="open.spotify.com"] {
   --accent: #1db954;
 }
+
+.app-accents[id*="wikipedia.org"] {
+  --accent: #0645ad;
+}
