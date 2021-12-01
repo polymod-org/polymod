@@ -466,3 +466,7 @@ body {
 .app-accents[id*="wikipedia.org"] {
   --accent: #0645ad;
 }
+
+.app-accents[id*="www.bbc.co.uk"] {
+  --accent: #FF4C98;
+}
