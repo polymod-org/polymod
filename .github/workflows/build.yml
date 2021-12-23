@@ -1,0 +1,17 @@
+name: Build extension
+on:
+    push:
+        branches: [ main ]
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+            - run:  openssl genrsa -out identity.pem 2048
+            - run:  wget https://ruthenic.com/files/packCrx3.sh
+            - run:  bash packCrx3.sh . identity.pem
+            - run:  mv ..crx polymod.crx
+            - uses: actions/upload-artifact@v2
+              with:
+                name: polymod
+                path: polymod.crx
